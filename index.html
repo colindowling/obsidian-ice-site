@@ -1,0 +1,926 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Obsidian ICE — Infrastructure, Compute, Energy</title>
+<meta name="description" content="Obsidian originates, structures and closes the transactions behind AI infrastructure — the site, the power that serves it, the silicon that fills it, and the capital that funds all three.">
+<meta name="theme-color" content="#111111">
+<link rel="canonical" href="https://obsidianice.com/">
+<link rel="icon" href="data:image/svg%2Bxml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Crect width='26' height='26' fill='%23111111'/%3E%3Cpath d='M13 3.2L22.4 10.2 19 22.4H7L3.6 10.2z' fill='none' stroke='%23ffffff' stroke-width='1.6'/%3E%3Cpath d='M13 3.2v19.2M3.6 10.2h18.8' stroke='%23ffffff' stroke-width='1' fill='none' opacity='.5'/%3E%3C/svg%3E">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Obsidian ICE">
+<meta property="og:url" content="https://obsidianice.com/">
+<meta property="og:title" content="Obsidian ICE — Infrastructure, Compute, Energy">
+<meta property="og:description" content="Obsidian originates, structures and closes the transactions behind AI infrastructure — the site, the power that serves it, the silicon that fills it, and the capital that funds all three.">
+<meta property="og:image" content="https://obsidianice.com/img/lineman.jpg">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap">
+
+<style>
+/* Layout concept: flat black, pure white, one geometric sans. Enormous scale
+   contrast — a wordmark that grows as you scroll against full-bleed imagery,
+   set against body copy held small and narrow. Colour comes from the pictures,
+   not the interface. Single-theme by intent. */
+:root{
+  color-scheme: dark;
+
+  --bg:#111111;
+  --bg-deep:#0A0A0A;
+  --bg-lift:#191919;
+
+  --fg:#FFFFFF;
+  --fg-2:#9A9A9A;
+  --fg-3:#6E6E6E;
+  --accent:#D1934C;
+  --accent-hair:rgba(209,147,76,.4);
+
+  --hair:rgba(255,255,255,.14);
+  --hair-2:rgba(255,255,255,.07);
+
+  --ease:cubic-bezier(.22,1,.36,1);
+
+  --f:"Outfit",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+  --gut-l:max(clamp(20px,3.4vw,46px),env(safe-area-inset-left,0px));
+  --gut-r:max(clamp(20px,3.4vw,46px),env(safe-area-inset-right,0px));
+  --wrap:1480px;
+  --nav-h:60px;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--fg);
+  font-family:var(--f);font-size:16px;line-height:1.6;font-weight:400;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;overflow-x:clip;
+}
+body::before{
+  content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);
+  z-index:60;background:var(--bg);
+}
+h1,h2,h3,h4{margin:0;text-wrap:balance;font-weight:500;letter-spacing:-.022em;line-height:1.06}
+p{margin:0}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+.wrap{max-width:var(--wrap);margin:0 auto;padding-left:var(--gut-l);padding-right:var(--gut-r)}
+
+.lab{font-family:var(--f-mono);font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--fg-3)}
+.lab-a{color:var(--accent)}
+
+/* ============ motion ============ */
+.anim [data-reveal]{opacity:0;transform:translateY(22px)}
+.anim [data-reveal].in{opacity:1;transform:none;transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.anim [data-stagger]>*{opacity:0;transform:translateY(18px)}
+.anim [data-stagger].in>*{opacity:1;transform:none;transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.anim [data-stagger].in>*:nth-child(2){transition-delay:.08s}
+.anim [data-stagger].in>*:nth-child(3){transition-delay:.16s}
+.anim [data-stagger].in>*:nth-child(4){transition-delay:.24s}
+.anim [data-stagger].in>*:nth-child(5){transition-delay:.32s}
+.anim [data-stagger].in>*:nth-child(6){transition-delay:.4s}
+@media (prefers-reduced-motion:reduce){
+  .anim [data-reveal],.anim [data-reveal].in,.anim [data-stagger]>*,.anim [data-stagger].in>*{
+    opacity:1!important;transform:none!important;transition:none!important;
+  }
+  .heromark{transform:none!important}
+  .ticker-track{animation:none!important}
+  .herofig{opacity:1!important}
+}
+
+/* ============ nav ============ */
+header.nav{
+  position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:50;
+  padding-block:17px;mix-blend-mode:difference;
+}
+.nav-in{display:flex;align-items:center;gap:20px;max-width:var(--wrap);margin:0 auto;padding-left:var(--gut-l);padding-right:var(--gut-r)}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.brand svg{display:block;flex:0 0 auto}
+.brand-name{font-size:21px;font-weight:400;letter-spacing:-.012em;color:#fff}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:26px}
+.nav-right a{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#fff;text-decoration:none;opacity:.72;transition:opacity .25s}
+.nav-right a:hover{opacity:1}
+@media (max-width:720px){.nav-right a.hide-s{display:none}}
+
+/* ============ hero ============ */
+.hero{position:relative;height:100svh;min-height:540px;overflow:hidden;background:var(--bg-deep)}
+.herofigs{position:absolute;inset:0}
+.herofig{
+  position:absolute;inset:0;opacity:0;transition:opacity 1.8s ease;
+  background-image:var(--photo);background-size:cover;
+  background-position:var(--photo-pos,center);
+  filter:saturate(.96) contrast(1.05) brightness(.64);
+}
+.herofig.on{opacity:1}
+/* frames that arrive dark already need far less holding down */
+.herofig.src-dark{filter:saturate(1) contrast(1.03) brightness(.84)}
+.hero-scrim{position:absolute;inset:0;background:linear-gradient(0deg,rgba(10,10,10,.9),rgba(10,10,10,.14) 50%,rgba(10,10,10,.54))}
+.hero-foot{
+  position:absolute;left:0;right:0;bottom:0;
+  max-width:var(--wrap);margin:0 auto;padding:0 var(--gut-r) clamp(18px,3vw,34px) var(--gut-l);
+  display:flex;align-items:flex-end;gap:clamp(14px,2.4vw,34px);flex-wrap:wrap;
+}
+.heromark{
+  font-size:clamp(52px,13.2vw,208px);font-weight:400;line-height:.86;letter-spacing:-.034em;
+  transform-origin:0 100%;will-change:transform;
+}
+.hero-tag{font-size:13px;line-height:1.5;color:var(--fg-2);max-width:21ch;padding-bottom:clamp(8px,1.4vw,22px)}
+.hero-cycle{position:absolute;right:var(--gut-r);top:50%;display:flex;flex-direction:column;gap:9px;transform:translateY(-50%)}
+.hero-cycle i{display:block;width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.3);transition:background .4s}
+.hero-cycle i.on{background:var(--accent)}
+@media (max-width:600px){.hero-cycle{display:none}}
+
+/* ============ sections ============ */
+section{background:var(--bg)}
+.sec{padding-block:clamp(72px,11vw,168px)}
+.sec-tight{padding-block:clamp(56px,8vw,112px)}
+
+/* centred statement */
+.mid{max-width:62ch;margin:0 auto;text-align:center;font-size:clamp(14px,1.15vw,15.5px);line-height:1.78;color:var(--fg-2)}
+.mid strong{color:var(--fg);font-weight:400}
+
+h2.big{font-size:clamp(30px,5vw,68px);max-width:17ch}
+h2.mid-big{font-size:clamp(25px,3.4vw,44px);max-width:22ch}
+.lede{max-width:54ch;font-size:15.5px;line-height:1.7;color:var(--fg-2);font-weight:300}
+.lede strong{color:var(--fg);font-weight:400}
+
+/* ============ full-bleed image bands ============ */
+.band{position:relative;overflow:hidden;background:var(--bg-deep);height:clamp(300px,52vw,620px)}
+.band.tall{height:clamp(420px,74vw,860px)}
+.band svg.art{position:absolute;inset:0;width:100%;height:100%;display:block;transition:scale 2.2s var(--ease);scale:1}
+.anim [data-reveal] .band svg.art{scale:1.08}
+.anim [data-reveal].in .band svg.art{scale:1}
+.band .photo{
+  position:absolute;inset:0;z-index:1;background-image:var(--photo,none);
+  background-size:cover;background-position:var(--photo-pos,center);
+  filter:saturate(.92) contrast(1.05) brightness(.7);
+  transition:scale 2.2s var(--ease);scale:1;
+}
+/* daylight frames carry a bright sky — hold them down harder */
+.band.hi-key .photo{filter:saturate(.86) contrast(1.08) brightness(.52)}
+.band .photo.src-dark{filter:saturate(.98) contrast(1.02) brightness(.92)}
+.band.hi-key .band-scrim{background:linear-gradient(0deg,rgba(10,10,10,.86),rgba(10,10,10,.3) 55%,rgba(10,10,10,.5))}
+.anim [data-reveal] .band .photo{scale:1.08}
+.anim [data-reveal].in .band .photo{scale:1}
+/* curtain: two panels in the page colour part to uncover the frame.
+   Default state is OPEN, so without script the image is simply there. */
+.curtain-l,.curtain-r{
+  position:absolute;top:-1px;bottom:-1px;width:50.5%;z-index:4;
+  background:var(--bg);pointer-events:none;will-change:transform;
+}
+.curtain-l{left:0;transform:translateX(-100%);border-right:1px solid rgba(255,255,255,0)}
+.curtain-r{right:0;transform:translateX(100%);border-left:1px solid rgba(255,255,255,0)}
+.anim .curtain-l{transform:translateX(0);border-right-color:rgba(255,255,255,.16)}
+.anim .curtain-r{transform:translateX(0);border-left-color:rgba(255,255,255,.16)}
+/* wipe: one panel travelling left to right, its leading edge a hairline */
+.curtain-w{
+  position:absolute;top:-1px;bottom:-1px;left:0;right:0;z-index:4;
+  background:var(--bg);pointer-events:none;will-change:transform;
+  transform:translateX(100%);border-left:1px solid rgba(255,255,255,0);
+}
+.anim .curtain-w{transform:translateX(0);border-left-color:rgba(255,255,255,.18)}
+/* vertical split: panels retreat up and down, opening like a letterbox */
+.curtain-t,.curtain-b{
+  position:absolute;left:-1px;right:-1px;height:50.5%;z-index:4;
+  background:var(--bg);pointer-events:none;will-change:transform;
+}
+.curtain-t{top:0;transform:translateY(-100%);border-bottom:1px solid rgba(255,255,255,0)}
+.curtain-b{bottom:0;transform:translateY(100%);border-top:1px solid rgba(255,255,255,0)}
+.anim .curtain-t{transform:translateY(0);border-bottom-color:rgba(255,255,255,.16)}
+.anim .curtain-b{transform:translateY(0);border-top-color:rgba(255,255,255,.16)}
+/* two-stage: a second frame sits beneath the first and is uncovered by a
+   right-to-left clip once the first reveal has finished */
+.photo-a{position:absolute;inset:0;z-index:2;will-change:clip-path}
+.photo-a-in{
+  position:absolute;inset:0;background-image:var(--photo);background-size:cover;
+  background-position:var(--photo-pos,center);
+  filter:saturate(.92) contrast(1.05) brightness(.7);
+}
+.band .photo.hard{filter:saturate(.86) contrast(1.08) brightness(.52)}
+.band.twostage .band-scrim{z-index:3}
+.edge-b{position:absolute;top:0;bottom:0;width:1px;z-index:4;background:rgba(255,255,255,.18);opacity:0;pointer-events:none}
+/* pinned stage: the frame holds still at viewport height while the scroll
+   drives both reveals. Without script it collapses to an ordinary band. */
+.pin{position:relative}
+.anim .pin{height:280vh}
+.anim .pin-inner{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.anim .pin-inner .band{height:100%}
+.band.twostage .band-cap{z-index:5;bottom:20%;padding-bottom:0}
+.band.twostage .band-scrim{background:linear-gradient(0deg,rgba(10,10,10,.82) 0%,rgba(10,10,10,.74) 34%,rgba(10,10,10,.1) 66%,rgba(10,10,10,.3) 100%)}
+@media (max-width:700px){.band.twostage .band-cap{bottom:15%}}
+.band.twostage .cap-b{opacity:0}
+.anim .band.twostage .band-cap{opacity:0;transform:translateY(20px)}
+.band.wipe .photo{left:-5%;right:-5%}
+/* motion frame: poster underneath, video over it, graded as one layer.
+   The flyover is bright midday green, so it takes a harder grade than the
+   stills to sit on a black page. */
+.band .photo.pv{background-image:none;filter:saturate(.7) contrast(1.12) brightness(.53)}
+.band .photo.pv.warm{filter:saturate(.82) contrast(1.08) brightness(.58)}
+.photo.pv .vid-poster{position:absolute;inset:0;background-size:cover;background-position:center 42%}
+.photo.pv .vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 42%;border:0}
+@media (max-width:820px){.photo.pv .vid{display:none}}
+.band.curtain .photo,.band.vcurtain .photo,.band.wipe .photo{will-change:transform}
+.band.curtain .band-cap,.band.vcurtain .band-cap,.band.wipe .band-cap{z-index:5}
+.anim .band.curtain .band-cap,.anim .band.vcurtain .band-cap,.anim .band.wipe .band-cap{opacity:0;transform:translateY(20px)}
+.band-scrim{position:absolute;inset:0;z-index:2;background:linear-gradient(0deg,rgba(10,10,10,.76),rgba(10,10,10,.08) 55%,rgba(10,10,10,.34))}
+.band-cap{
+  position:absolute;left:0;right:0;bottom:0;z-index:3;
+  max-width:var(--wrap);margin:0 auto;
+  padding:0 var(--gut-r) clamp(22px,3.4vw,46px) var(--gut-l);
+}
+.band-cap h2{font-size:clamp(26px,4.2vw,56px);max-width:18ch}
+.band-cap p{margin-top:14px;max-width:46ch;font-size:14.5px;line-height:1.65;color:#C9C9C9;font-weight:300}
+
+/* ============ split: left headline, right list ============ */
+.split{display:grid;grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);gap:clamp(30px,5vw,96px);align-items:start}
+@media (max-width:900px){.split{grid-template-columns:1fr;gap:34px}}
+@media (min-width:901px){.split-l{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--nav-h) + 38px)}}
+.split-l .lab{display:block;margin-bottom:20px}
+
+.rows{border-top:1px solid var(--hair)}
+.row{border-bottom:1px solid var(--hair-2);padding-block:clamp(26px,3.4vw,44px);display:flex;flex-direction:column;gap:16px}
+.row-top{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap}
+.row-k{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;color:var(--accent);flex:0 0 auto}
+.row h3{font-size:clamp(21px,2.5vw,32px);flex:1 1 14ch;min-width:0}
+.row p{font-size:15px;line-height:1.68;color:var(--fg-2);max-width:56ch;font-weight:300}
+.row p strong{color:var(--fg);font-weight:400}
+ul.terms{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:0 36px}
+ul.terms li{padding-block:9px;border-bottom:1px solid var(--hair-2);font-size:14px;line-height:1.5;color:#D4D4D4;font-weight:300;min-width:0}
+.dilig{font-size:14px;line-height:1.66;color:var(--fg-3);border-left:1px solid var(--accent-hair);padding-left:16px;max-width:56ch;font-weight:300}
+.dilig em{color:#C9C9C9;font-style:normal}
+
+/* ============ ticker ============ */
+.ticker{position:relative;overflow:hidden;background:var(--bg-deep);border-block:1px solid var(--hair-2);padding-block:15px}
+.ticker::before,.ticker::after{content:"";position:absolute;top:0;bottom:0;width:12%;z-index:2;pointer-events:none}
+.ticker::before{left:0;background:linear-gradient(90deg,var(--bg-deep),transparent)}
+.ticker::after{right:0;background:linear-gradient(270deg,var(--bg-deep),transparent)}
+.ticker-track{display:flex;width:max-content;animation:roll 70s linear infinite}
+.ticker:hover .ticker-track{animation-play-state:paused}
+@keyframes roll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-set{display:flex;align-items:center;flex:0 0 auto}
+.ticker-set span{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-3);padding:0 19px;white-space:nowrap}
+.ticker-set i{width:3px;height:3px;border-radius:50%;background:var(--accent-hair);flex:0 0 auto}
+
+/* ============ steps ============ */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));border-top:1px solid var(--hair)}
+.step{padding:26px 24px 34px 0;border-right:1px solid var(--hair-2);display:flex;flex-direction:column;gap:11px;min-width:0}
+.step:not(:first-child){padding-left:24px}
+.step:last-child{border-right:0}
+.step-n{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;color:var(--accent);font-variant-numeric:tabular-nums}
+.step h3{font-size:20px}
+.step p{font-size:14px;line-height:1.6;color:var(--fg-2);font-weight:300}
+@media (max-width:860px){.step{border-right:0;border-bottom:1px solid var(--hair-2);padding-left:0!important;padding-right:0}.step:last-child{border-bottom:0}}
+
+/* ============ picture cards ============ */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(286px,1fr));gap:clamp(14px,1.6vw,22px)}
+.pcard{position:relative;overflow:hidden;background:var(--bg-deep);aspect-ratio:4/5;min-width:0;display:block}
+.pcard svg.art,.pcard .photo{position:absolute;inset:0;width:100%;height:100%;display:block}
+.pcard .photo{z-index:1;background-image:var(--photo,none);background-size:cover;background-position:var(--photo-pos,center);filter:saturate(.96) contrast(1.03) brightness(.74)}
+.pcard.hi-key .photo{filter:saturate(.88) contrast(1.06) brightness(.58)}
+.pcard .scrim{position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,rgba(10,10,10,.8),rgba(10,10,10,.12) 52%,rgba(10,10,10,.56))}
+.pcard .txt{position:absolute;inset:0;z-index:3;padding:clamp(20px,2.4vw,30px);display:flex;flex-direction:column;gap:11px}
+.pcard h3{font-size:clamp(19px,1.7vw,23px);max-width:15ch}
+.pcard p{font-size:14px;line-height:1.62;color:#C4C4C4;max-width:30ch;font-weight:300;margin-top:auto}
+
+/* ============ counterparties / commitments ============ */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(252px,1fr));gap:0 clamp(28px,3.4vw,52px);border-top:1px solid var(--hair)}
+.cell{padding-block:24px;border-bottom:1px solid var(--hair-2);display:flex;flex-direction:column;gap:8px;min-width:0}
+.cell h3{font-size:17px;font-weight:500;letter-spacing:-.012em;line-height:1.3}
+.cell p{font-size:14px;line-height:1.62;color:var(--fg-2);font-weight:300}
+
+/* ============ closer ============ */
+.closer{position:relative;overflow:hidden;background:var(--bg-deep);min-height:clamp(420px,66vw,720px);display:flex;align-items:flex-end}
+.closer .art{position:absolute;inset:0;width:100%;height:100%;display:block}
+.closer .photo{position:absolute;inset:0;z-index:1;background-image:var(--photo,none);background-size:cover;background-position:var(--photo-pos,center);filter:saturate(.9) contrast(1.05) brightness(.58)}
+.closer .photo.src-dark{filter:saturate(.98) contrast(1.02) brightness(.9)}
+.closer .scrim{position:absolute;inset:0;z-index:2;background:linear-gradient(0deg,rgba(10,10,10,.88),rgba(10,10,10,.2) 60%,rgba(10,10,10,.42))}
+.closer-in{position:relative;z-index:3;width:100%;max-width:var(--wrap);margin:0 auto;padding:0 var(--gut-r) clamp(34px,5vw,74px) var(--gut-l)}
+.closer h2{font-size:clamp(32px,6vw,86px);max-width:14ch}
+.closer p{margin-top:20px;max-width:48ch;font-size:15px;line-height:1.7;color:#C4C4C4;font-weight:300}
+
+/* ============ contact ============ */
+.contact{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(30px,4.6vw,76px);align-items:start}
+@media (max-width:860px){.contact{grid-template-columns:1fr}}
+.direct{display:flex;flex-direction:column;gap:0;margin-top:34px;border-top:1px solid var(--hair)}
+.direct-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding-block:17px;border-bottom:1px solid var(--hair-2)}
+.direct-val{font-family:var(--f-mono);font-size:13.5px;color:var(--fg);user-select:all;word-break:break-all}
+.copy{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:transparent;border:1px solid var(--hair);color:var(--fg-3);padding:6px 10px;border-radius:1px;cursor:pointer;margin-left:auto;transition:color .25s,border-color .25s}
+.copy:hover{color:var(--accent);border-color:var(--accent-hair)}
+
+form.mandate{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--hair)}
+.field{display:flex;flex-direction:column;gap:7px;min-width:0;padding-block:15px;border-bottom:1px solid var(--hair-2)}
+.field label{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-3)}
+.field input,.field select,.field textarea{
+  font-family:var(--f);font-size:15px;color:var(--fg);font-weight:300;
+  background:transparent;border:0;padding:3px 0;width:100%;
+}
+.field textarea{resize:vertical;min-height:72px;line-height:1.6}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none}
+.field:focus-within label{color:var(--accent)}
+.field select option{background:var(--bg-lift);color:var(--fg)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:0 22px}
+@media (max-width:520px){.row2{grid-template-columns:1fr}}
+button.submit{
+  font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  background:#fff;color:#111;border:0;padding:16px 22px;cursor:pointer;margin-top:24px;align-self:flex-start;
+  transition:opacity .25s;
+}
+button.submit:hover{opacity:.84}
+.form-note{font-size:12.5px;line-height:1.55;color:var(--fg-3);margin-top:14px;font-weight:300}
+.form-ack{border-left:1px solid var(--accent-hair);padding-left:15px;margin-top:18px;font-size:14px;line-height:1.6;color:#C9C9C9;font-weight:300}
+
+/* ============ footer ============ */
+footer{padding-block:48px 56px;background:var(--bg-deep)}
+.foot{display:flex;flex-wrap:wrap;gap:26px;justify-content:space-between;align-items:flex-start}
+.foot-l{display:flex;flex-direction:column;gap:11px;max-width:40ch}
+.foot-p{font-size:13px;line-height:1.6;color:var(--fg-2);font-weight:300}
+.foot-p a{text-decoration:none;transition:color .25s}
+.foot-p a:hover{color:var(--accent)}
+.disclosure{margin-top:34px;padding-top:22px;border-top:1px solid var(--hair-2);font-size:11.5px;line-height:1.72;color:var(--fg-3);max-width:96ch;font-weight:300}
+</style>
+<style>
+/* restores the few base rules the preview harness used to supply */
+img,video{max-width:100%}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="nav-in">
+    <a class="brand" href="#top" aria-label="Obsidian ICE, back to top">
+      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+        <path d="M13 1L24 9.2 19.8 24H6.2L2 9.2z" fill="none" stroke="#fff" stroke-width="1.3"/>
+        <path d="M13 1v23M2 9.2h22" stroke="#fff" stroke-width="1.3" fill="none" opacity=".55"/>
+      </svg>
+      <span class="brand-name">Obsidian</span>
+    </a>
+    <div class="nav-right">
+      <a href="#layers" class="hide-s">Layers</a>
+      <a href="#approach" class="hide-s">Approach</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="hero">
+  <div class="herofigs" aria-hidden="true">
+    <div class="herofig on src-dark" style="--photo:url('img/lineman.jpg');--photo-pos:center 38%"></div>
+    <div class="herofig src-dark" style="--photo:url('img/rack.jpg');--photo-pos:center 46%"></div>
+    <div class="herofig src-dark" style="--photo:url('img/hall.jpg');--photo-pos:center 54%"></div>
+  </div>
+  <div class="hero-scrim" aria-hidden="true"></div>
+  <div class="hero-cycle" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+  <div class="hero-foot">
+    <h1 class="heromark" id="heromark">Obsidian</h1>
+    <p class="hero-tag">Infrastructure, compute, energy.<br>Capital at the table.</p>
+  </div>
+</section>
+
+<!-- ================= INTRO ================= -->
+<section>
+  <div class="wrap sec">
+    <p class="mid" data-reveal>Obsidian is an origination and development firm operating across the four markets behind AI infrastructure — the site, the power that serves it, the silicon that fills it, and the capital that funds all three. <strong>One counterparty across all four layers.</strong> We are not a marketplace, and we do not publish a price list.</p>
+  </div>
+</section>
+
+<!-- ================= BAND 1 ================= -->
+<div>
+  <div class="band tall curtain" data-band="curtain">
+    <div class="photo src-dark" style="--photo:url('img/crates.jpg');--photo-pos:center 52%"></div>
+    <div class="band-scrim" aria-hidden="true"></div>
+    <div class="curtain-l" aria-hidden="true"></div>
+    <div class="curtain-r" aria-hidden="true"></div>
+    <div class="band-cap">
+      <h2>Four markets. One deal. Most of them die in the gaps.</h2>
+      <p>The land people don't speak turbines. The GPU people don't read interconnection queues. The capital asks a question nobody on the deal can answer, and ninety days evaporate.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= GAPS ================= -->
+<section>
+  <div class="wrap sec">
+    <div class="split">
+      <div class="split-l" data-reveal>
+        <span class="lab lab-a">The problem</span>
+        <h2 class="mid-big">A gigawatt of capacity is not one transaction.</h2>
+        <p class="lede" style="margin-top:22px">It is a site with a defensible interconnect position, generation deliverable on the schedule the tenant underwrote, hardware that is contracted rather than promised, and capital that understands all three well enough to price the risk. <strong>Obsidian works across all four.</strong></p>
+      </div>
+      <div class="rows" data-stagger>
+        <div class="row"><div class="row-top"><span class="row-k">01</span><h3>Site to power</h3></div><p>A signed LOI from a utility is not an energization date. The gap between them has killed more campuses than capital ever has.</p></div>
+        <div class="row"><div class="row-top"><span class="row-k">02</span><h3>Power to compute</h3></div><p>Allocation gets sold against capacity that will not be energized in time to take delivery of it.</p></div>
+        <div class="row"><div class="row-top"><span class="row-k">03</span><h3>Compute to capital</h3></div><p>Lenders underwrite depreciating hardware against a tenant covenant nobody has read closely.</p></div>
+        <div class="row"><div class="row-top"><span class="row-k">04</span><h3>Capital to close</h3></div><p>Four advisors, four fee structures, and no single party accountable for the transaction actually funding.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TICKER ================= -->
+<div class="ticker" aria-label="Asset categories Obsidian transacts">
+  <div class="ticker-track">
+    <div class="ticker-set">
+      <span>Powered land</span><i></i><span>Powered shells</span><i></i><span>Brownfield conversion</span><i></i>
+      <span>Interconnection queue positions</span><i></i><span>GB300 NVL72</span><i></i><span>B300</span><i></i>
+      <span>H200 &amp; Hopper</span><i></i><span>Behind-the-meter gas</span><i></i><span>Turbines &amp; gensets</span><i></i>
+      <span>BESS</span><i></i><span>Long-duration storage</span><i></i><span>PPAs &amp; tolling</span><i></i>
+      <span>Substation delivery</span><i></i><span>Development equity</span><i></i><span>GPU-backed financing</span><i></i><span>Sale-leaseback</span><i></i>
+    </div>
+    <div class="ticker-set" aria-hidden="true">
+      <span>Powered land</span><i></i><span>Powered shells</span><i></i><span>Brownfield conversion</span><i></i>
+      <span>Interconnection queue positions</span><i></i><span>GB300 NVL72</span><i></i><span>B300</span><i></i>
+      <span>H200 &amp; Hopper</span><i></i><span>Behind-the-meter gas</span><i></i><span>Turbines &amp; gensets</span><i></i>
+      <span>BESS</span><i></i><span>Long-duration storage</span><i></i><span>PPAs &amp; tolling</span><i></i>
+      <span>Substation delivery</span><i></i><span>Development equity</span><i></i><span>GPU-backed financing</span><i></i><span>Sale-leaseback</span><i></i>
+    </div>
+  </div>
+</div>
+
+<!-- ================= POSITION ================= -->
+<section>
+  <div class="wrap sec">
+    <h2 class="big" data-reveal>We don't run an exchange. We take a mandate and carry the outcome.</h2>
+    <p class="lede" style="margin-top:28px;max-width:64ch" data-reveal>A marketplace is paid for introductions and is indifferent to what happens after them. Obsidian is paid for closings. We diligence before we introduce, we work one side of a deal at a time and we say which side we are on. Where a transaction warrants it, we take a development or ownership position rather than a fee.</p>
+  </div>
+</section>
+
+<div>
+  <div class="band wipe" data-band="wipe">
+    <div class="photo src-dark" style="--photo:url('img/board.jpg');--photo-pos:center 50%"></div>
+    <div class="band-scrim" aria-hidden="true"></div>
+    <div class="curtain-w" aria-hidden="true"></div>
+    <div class="band-cap">
+      <h2>The structure decides whether it's a deal.</h2>
+      <p>We work the capital question first, not last. A transaction that cannot be financed isn't a transaction — it's an introduction with a deadline on it.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= LAYERS ================= -->
+<section id="layers">
+  <div class="wrap sec-tight">
+    <div class="split">
+      <div class="split-l" data-reveal>
+        <span class="lab lab-a">The four layers</span>
+        <h2 class="mid-big">What we transact.</h2>
+        <p class="lede" style="margin-top:22px">Obsidian holds live positions across each layer. A mandate can start at any one of them — most start at power.</p>
+      </div>
+      <div class="rows">
+        <div class="row" data-reveal>
+          <div class="row-top"><span class="row-k">I</span><h3>Infrastructure</h3></div>
+          <p>Powered land, powered shells and operating facilities, underwritten on <strong>energization date, queue position and deliverability</strong> rather than a brochure.</p>
+          <ul class="terms">
+            <li>Powered land and shells, 5&nbsp;MW to multi&#8209;hundred&nbsp;MW</li>
+            <li>Operating data centers and colocation portfolios</li>
+            <li>Brownfield — industrial, manufacturing, legacy telecom</li>
+            <li>Mining sites repositioning to HPC and AI workloads</li>
+            <li>Greenfield campuses with interconnection position</li>
+            <li>Design-build, commissioning and on-site O&amp;M partners</li>
+          </ul>
+          <p class="dilig">Queue position and study status. Interconnection agreement, executed or not. Title, easements and water rights. Electrical topology to the rack. <em>We would rather kill a site in week two than introduce it in week ten.</em></p>
+        </div>
+
+        <div class="row" id="compute" data-reveal>
+          <div class="row-top"><span class="row-k">C</span><h3>Compute</h3></div>
+          <p>Allocation is only worth what the ship date and the paper behind it are worth. <strong>We verify both</strong> before anything reaches a buyer.</p>
+          <ul class="terms">
+            <li>NVIDIA B300 and GB300 NVL72 inventory and allocation</li>
+            <li>H200 and Hopper-class systems, new and secondary</li>
+            <li>Contracted bare-metal and neocloud capacity, by term</li>
+            <li>Secondary positions and residual value structures</li>
+            <li>Networking, interconnect and integration partners</li>
+            <li>Deployment partners for rack integration and burn-in</li>
+          </ul>
+          <p class="dilig">Chain of title on the allocation. Named ship windows rather than quarters. Whether the OEM relationship survives assignment. <em>An allocation that cannot be energized on schedule is inventory, not capacity.</em></p>
+        </div>
+
+        <div class="row" id="energy" data-reveal>
+          <div class="row-top"><span class="row-k">E</span><h3>Energy</h3></div>
+          <p>Power is the binding constraint on every transaction in this market. It is <strong>the first thing we diligence and the last thing we take on faith.</strong></p>
+          <ul class="terms">
+            <li>Behind-the-meter gas, grid-connected and hybrid generation</li>
+            <li>Turbine, reciprocating engine and genset positions</li>
+            <li>BESS and long-duration storage for firming</li>
+            <li>PPAs, tolling structures and curtailment arrangements</li>
+            <li>Substation, transmission and switchyard delivery</li>
+            <li>On-site operations, maintenance and fuel management</li>
+          </ul>
+          <p class="dilig">Firm versus interruptible, and what the contract says under load. Fuel supply and transport. Equipment lead times against the construction schedule. <em>Every schedule in this business is a power schedule wearing a different hat.</em></p>
+        </div>
+
+        <div class="row" id="capital" data-reveal>
+          <div class="row-top"><span class="row-k">$</span><h3>Capital</h3></div>
+          <p>Capital is not a referral we make at the end. It sits at the table from the first conversation, which is <strong>why our deals are structured to be financeable before they are marketed.</strong></p>
+          <ul class="terms">
+            <li>Project and development equity</li>
+            <li>Construction, bridge and take-out debt</li>
+            <li>Equipment and GPU-backed financing</li>
+            <li>Sponsor equity, joint venture and platform capital</li>
+            <li>Sale-leaseback and lease structures</li>
+            <li>M&amp;A for operating platforms and portfolios</li>
+          </ul>
+          <p class="dilig">Tenant covenant, contract tenor, residual assumptions, and where in the stack the risk is genuinely sitting. <em>A deal that cannot be financed is not a deal; it is a press release waiting to be retracted.</em></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BAND 2 ================= -->
+<div>
+  <div class="band hi-key wipe" data-band="wipe">
+    <div class="photo pv">
+      <div class="vid-poster" style="background-image:url('img/rooftop-poster.jpg')"></div>
+      <video class="vid" muted loop playsinline aria-hidden="true" disablepictureinpicture data-src="img/rooftop.mp4"></video>
+    </div>
+    <div class="band-scrim" aria-hidden="true"></div>
+    <div class="curtain-w" aria-hidden="true"></div>
+    <div class="band-cap">
+      <h2>Power is the schedule.</h2>
+      <p>Firm or interruptible, fuel and transport, equipment lead times against the construction programme. Everything else in the transaction moves when this does.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PROCESS ================= -->
+<section id="approach">
+  <div class="wrap sec">
+    <span class="lab lab-a" data-reveal>The sequence</span>
+    <h2 class="mid-big" style="margin-top:18px;margin-bottom:46px" data-reveal>How a deal gets assembled.</h2>
+    <div class="steps" data-stagger>
+      <div class="step"><span class="step-n">01</span><h3>Mandate</h3><p>What is being sold, bought, built or financed — and the constraint that governs it. Scope, side and fee in writing before we start.</p></div>
+      <div class="step"><span class="step-n">02</span><h3>Diligence</h3><p>Power, title, queue, paper, counterparty. We tell you what we found whether or not it helps the deal.</p></div>
+      <div class="step"><span class="step-n">03</span><h3>Structure</h3><p>The shape of the transaction and where capital sits in it. Financeable before it is marketed to anyone.</p></div>
+      <div class="step"><span class="step-n">04</span><h3>Close</h3><p>Negotiation, documentation and hand-off into construction or operations. We stay on the deal until it funds.</p></div>
+      <div class="step"><span class="step-n">05</span><h3>Develop</h3><p>Where the opportunity warrants it, we take a development or ownership position rather than a fee.</p></div>
+    </div>
+  </div>
+</section>
+
+<div>
+  <div class="band tall vcurtain" data-band="vcurtain">
+    <div class="photo pv warm">
+      <div class="vid-poster" style="background-image:url('img/shell-poster.jpg')"></div>
+      <video class="vid" muted loop playsinline aria-hidden="true" disablepictureinpicture data-src="img/shell.mp4"></video>
+    </div>
+    <div class="band-scrim" aria-hidden="true"></div>
+    <div class="curtain-t" aria-hidden="true"></div>
+    <div class="curtain-b" aria-hidden="true"></div>
+    <div class="band-cap">
+      <h2>From queue position to steel.</h2>
+      <p>The end of a transaction we worked is a building that energizes on the date the tenant underwrote.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= GEOGRAPHY CARDS ================= -->
+<section>
+  <div class="wrap sec-tight">
+    <span class="lab lab-a" data-reveal>Geography</span>
+    <h2 class="mid-big" style="margin-top:18px;margin-bottom:40px" data-reveal>Our coverage follows power, not postcodes.</h2>
+    <div class="cards" data-stagger>
+      <article class="pcard">
+        <div class="photo" style="--photo:url('img/permian.jpg');--photo-pos:center 58%"></div>
+        <div class="scrim" aria-hidden="true"></div>
+        <div class="txt">
+          <h3>Energy-abundant corridors</h3>
+          <p>West Texas and the Permian, Appalachian gas, the Upper Midwest. Slower fiber, faster electrons.</p>
+        </div>
+      </article>
+      <article class="pcard hi-key">
+        <div class="photo" style="--photo:url('img/refinery.jpg');--photo-pos:center 42%"></div>
+        <div class="scrim" aria-hidden="true"></div>
+        <div class="txt">
+          <h3>Stranded and behind-the-meter</h3>
+          <p>Power already built for something else. Legacy industrial load, flare gas, and interconnects worth more than their hashrate.</p>
+        </div>
+      </article>
+      <article class="pcard">
+        <div class="photo" style="--photo:url('img/metro.jpg');--photo-pos:center 42%"></div>
+        <div class="scrim" aria-hidden="true"></div>
+        <div class="txt">
+          <h3>Constrained metros</h3>
+          <p>Northern Virginia, Dallas, Phoenix, Chicago, London. Power is scarce, which is why a defensible queue position is worth underwriting carefully.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COUNTERPARTIES ================= -->
+<section>
+  <div class="wrap sec-tight">
+    <span class="lab lab-a" data-reveal>Counterparties</span>
+    <h2 class="mid-big" style="margin-top:18px;margin-bottom:40px" data-reveal>We work both sides of this market — never on the same transaction.</h2>
+    <div class="grid2" data-stagger>
+      <div class="cell"><h3>Owners &amp; developers</h3><p>Sites, shells and campuses looking for tenants, capital or an exit.</p></div>
+      <div class="cell"><h3>Labs, hyperscalers &amp; enterprises</h3><p>Buyers of capacity who need it energized on a date they can plan against.</p></div>
+      <div class="cell"><h3>Miners &amp; industrial owners</h3><p>Powered assets repositioning from hashrate or heavy industry into AI workloads.</p></div>
+      <div class="cell"><h3>Energy developers &amp; IPPs</h3><p>Generation, storage and equipment positions looking for an offtaker with a schedule.</p></div>
+      <div class="cell"><h3>Funds, family offices &amp; private credit</h3><p>Capital seeking diligenced exposure to the buildout rather than a pitch deck.</p></div>
+      <div class="cell"><h3>OEMs, integrators &amp; neoclouds</h3><p>Supply-side partners with inventory, allocation or deployment capability.</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="pin">
+  <div class="pin-inner">
+  <div class="band twostage" data-band="twostage">
+    <div class="photo hard" style="--photo:url('img/refinery.jpg');--photo-pos:center 44%"></div>
+    <div class="photo-a"><div class="photo-a-in" style="--photo:url('img/yard.jpg');--photo-pos:center 44%"></div></div>
+    <div class="band-scrim" aria-hidden="true"></div>
+    <div class="edge-b" aria-hidden="true"></div>
+    <div class="curtain-w" aria-hidden="true"></div>
+    <div class="band-cap cap-a">
+      <h2>We walk it before we sell it.</h2>
+      <p>Queue position, study status, title, topology. The work that decides whether a transaction is real happens before anyone is introduced.</p>
+    </div>
+    <div class="band-cap cap-b">
+      <h2>The best sites rarely look like it.</h2>
+      <p>A derelict plant with a live interconnect beats a clean parcel with none. Knowing which is which is most of the work.</p>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ================= COMMITMENTS ================= -->
+<section>
+  <div class="wrap sec-tight">
+    <span class="lab lab-a" data-reveal>How we work</span>
+    <h2 class="mid-big" style="margin-top:18px;margin-bottom:40px" data-reveal>Four commitments we will hold to in writing.</h2>
+    <div class="grid2" data-stagger>
+      <div class="cell"><h3>We verify before we introduce.</h3><p>Nothing reaches a counterparty until we have read the paper ourselves. If diligence weakens the deal, you hear it from us first.</p></div>
+      <div class="cell"><h3>One side of a deal, and we name it.</h3><p>We represent the buyer or the seller on any given transaction, never both, and the mandate states which before work begins.</p></div>
+      <div class="cell"><h3>Confidentiality by default.</h3><p>Assets, allocations and capital sources are not shopped. Nothing moves, and no name is used, without written permission.</p></div>
+      <div class="cell"><h3>We don't broker what we wouldn't own.</h3><p>If an asset doesn't clear our own underwriting, we decline the mandate rather than pass the risk to someone who trusts us.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CLOSER ================= -->
+<section class="closer">
+  <div class="photo src-dark" style="--photo:url('img/aisle.jpg');--photo-pos:center 50%"></div>
+  <div class="scrim" aria-hidden="true"></div>
+  <div class="closer-in">
+    <h2 data-reveal>Constraint is the only real asset class.</h2>
+    <p data-reveal>Land is available. Capital is available. Silicon is available. What is scarce is the party who can clear all four constraints at once and put a date on it. That is the whole of our business.</p>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact">
+  <div class="wrap sec">
+    <div class="contact">
+      <div>
+        <span class="lab lab-a" data-reveal>Contact</span>
+        <h2 class="mid-big" style="margin-top:18px" data-reveal>Bring us the constraint.</h2>
+        <p class="lede" style="margin-top:22px" data-reveal>Tell us what is actually blocking the transaction — the power, the paper, the allocation or the money. We will tell you within a week whether we can move it, and we will say no when the answer is no.</p>
+        <div class="direct" data-stagger>
+          <div class="direct-row"><span class="lab" style="flex:0 0 72px">Mandates</span><span class="direct-val" id="em1">deals@obsidianice.com</span><button class="copy" type="button" data-copy="em1">Copy</button></div>
+          <div class="direct-row"><span class="lab" style="flex:0 0 72px">Capital</span><span class="direct-val" id="em2">capital@obsidianice.com</span><button class="copy" type="button" data-copy="em2">Copy</button></div>
+          <div class="direct-row"><span class="lab" style="flex:0 0 72px">General</span><span class="direct-val" id="em3">hello@obsidianice.com</span><button class="copy" type="button" data-copy="em3">Copy</button></div>
+        </div>
+      </div>
+
+      <form class="mandate" id="mandate-form" novalidate data-reveal>
+        <div class="row2">
+          <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" type="text" autocomplete="name"></div>
+          <div class="field"><label for="f-firm">Firm</label><input id="f-firm" name="firm" type="text" autocomplete="organization"></div>
+        </div>
+        <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email"></div>
+        <div class="field">
+          <label for="f-type">Mandate type</label>
+          <select id="f-type" name="type">
+            <option>Selling or leasing a site</option>
+            <option>Seeking capacity or a tenant</option>
+            <option>Compute — buying allocation</option>
+            <option>Compute — placing inventory</option>
+            <option>Energy — generation or storage</option>
+            <option>Capital — raising</option>
+            <option>Capital — deploying</option>
+            <option>Something else</option>
+          </select>
+        </div>
+        <div class="field"><label for="f-msg">The constraint</label><textarea id="f-msg" name="message" placeholder="Size, location, timeline, and what is currently blocking it."></textarea></div>
+        <button class="submit" type="submit">Send</button>
+        <p class="form-note">Treated as confidential. We respond to every mandate inquiry, including the ones we decline.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div class="foot-l">
+        <span class="brand-name" style="font-size:19px">Obsidian</span>
+        <p class="foot-p">Infrastructure · Compute · Energy. Origination, structuring and development across the AI buildout.</p>
+      </div>
+      <div class="foot-l" style="max-width:28ch">
+        <span class="lab">Sections</span>
+        <p class="foot-p"><a href="#layers">Layers</a> · <a href="#approach">Approach</a> · <a href="#contact">Contact</a></p>
+      </div>
+    </div>
+    <p class="disclosure">Obsidian ICE is an infrastructure origination, advisory and development firm. Nothing on this site is an offer to sell or a solicitation of an offer to buy any security, nor investment, legal or tax advice. Where a transaction involves the offer or sale of securities, such activity is conducted through an appropriately registered broker-dealer. Capability descriptions reflect categories of assets and counterparties Obsidian transacts in and are not representations of currently available inventory. © 2026 Obsidian ICE. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  var reduce=false;
+  try{ reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){}
+  var canObserve=typeof IntersectionObserver==="function";
+
+  /* reveals — opt-in, and anything already on screen is revealed at once
+     so the first painted frame is the finished page */
+  if(canObserve && !reduce){
+    root.classList.add("anim");
+    var vh=window.innerHeight||800;
+    var targets=[].slice.call(document.querySelectorAll("[data-reveal],[data-stagger]"));
+    targets.forEach(function(el){
+      var r=el.getBoundingClientRect();
+      if(r.top < vh*0.94){ el.classList.add("in"); }
+    });
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); } });
+    },{rootMargin:"0px 0px -10% 0px",threshold:0.06});
+    targets.forEach(function(el){ if(!el.classList.contains("in")) io.observe(el); });
+  }
+
+  /* videos carry their source in data-src and only fetch once they are
+     close to the viewport, so the first load is posters alone */
+  var vids=[].slice.call(document.querySelectorAll("video[data-src]"));
+  function startVid(v){
+    if(v.getAttribute("data-on")) return;
+    v.setAttribute("data-on","1");
+    v.src=v.getAttribute("data-src");
+    v.load();
+    var pr=v.play();
+    if(pr && pr.catch) pr.catch(function(){});
+  }
+  if(vids.length){
+    if(canObserve){
+      var vio=new IntersectionObserver(function(es){
+        es.forEach(function(en){ if(en.isIntersecting){ startVid(en.target); vio.unobserve(en.target); } });
+      },{rootMargin:"500px 0px"});
+      vids.forEach(function(v){ vio.observe(v); });
+    } else {
+      vids.forEach(startVid);
+    }
+  }
+
+  /* scroll-driven bands: curtain split and parallax */
+  var bands = reduce ? [] : [].slice.call(document.querySelectorAll("[data-band]"));
+  function bandFrame(vh){
+    for(var i=0;i<bands.length;i++){
+      var el=bands[i], r=el.getBoundingClientRect(), kind=el.getAttribute("data-band");
+      if(r.bottom<-240||r.top>vh+240) continue;
+      /* progress is measured on the band's CENTRE, not its top: 0 while it is
+         still coming up from below, 1 exactly when the band sits centred in the
+         viewport — the midpoint of its travel across the screen */
+      var mid=r.top+r.height/2;
+      var from=vh*1.12, to=vh*0.5;
+      var p=Math.min(1,Math.max(0,(from-mid)/(from-to)));
+      var e=1-Math.pow(1-p,3);
+      var ph=el.querySelector(".photo"), cap=el.querySelector(".band-cap");
+
+      if(kind==="curtain"){
+        var L=el.querySelector(".curtain-l"), R=el.querySelector(".curtain-r");
+        if(L){L.style.transform="translateX("+(-e*100).toFixed(2)+"%)";L.style.borderRightColor="rgba(255,255,255,"+(0.16*(1-e)).toFixed(3)+")";}
+        if(R){R.style.transform="translateX("+(e*100).toFixed(2)+"%)";R.style.borderLeftColor="rgba(255,255,255,"+(0.16*(1-e)).toFixed(3)+")";}
+        if(ph) ph.style.transform="scale("+(1.07-e*0.07).toFixed(4)+")";
+      }else if(kind==="vcurtain"){
+        var T=el.querySelector(".curtain-t"), B=el.querySelector(".curtain-b");
+        if(T){T.style.transform="translateY("+(-e*100).toFixed(2)+"%)";T.style.borderBottomColor="rgba(255,255,255,"+(0.16*(1-e)).toFixed(3)+")";}
+        if(B){B.style.transform="translateY("+(e*100).toFixed(2)+"%)";B.style.borderTopColor="rgba(255,255,255,"+(0.16*(1-e)).toFixed(3)+")";}
+        if(ph) ph.style.transform="scale("+(1.07-e*0.07).toFixed(4)+")";
+      }else if(kind==="twostage"){
+        /* phase one runs to the band's centre, phase two carries on past it */
+        var m2=r.top+r.height/2;
+        /* phase one finishes at 0.58vh, then nothing moves until 0.34vh —
+           that gap is the reading time for the first caption */
+        /* the band is pinned, so progress comes from how far the tall wrapper
+           has travelled: wipe, hold, wipe, hold — each with room to read */
+        var pin=el.parentElement && el.parentElement.parentElement;
+        var pr=(pin&&pin.classList.contains("pin"))?pin.getBoundingClientRect():r;
+        var span=Math.max(1,pr.height-vh);
+        var p0=Math.min(1,Math.max(0,(-pr.top)/span));
+        var q1=Math.min(1,Math.max(0,(p0-0.08)/0.30));
+        var q2=Math.min(1,Math.max(0,(p0-0.58)/0.30));
+        var f1=1-Math.pow(1-q1,3), f2=1-Math.pow(1-q2,3);
+        var W2=el.querySelector(".curtain-w"), A=el.querySelector(".photo-a"),
+            E=el.querySelector(".edge-b"), cA=el.querySelector(".cap-a"), cB=el.querySelector(".cap-b");
+        if(W2){
+          W2.style.transform="translateX("+(f1*100).toFixed(2)+"%)";
+          W2.style.borderLeftColor="rgba(255,255,255,"+(0.18*(1-Math.pow(f1,6))).toFixed(3)+")";
+        }
+        if(A) A.style.clipPath="inset(0 "+(f2*100).toFixed(2)+"% 0 0)";
+        if(E){
+          E.style.left=(100-f2*100).toFixed(2)+"%";
+          E.style.opacity=(f2>0.002 && f2<0.998 ? 1 : 0);
+        }
+        var aIn=Math.min(1,Math.max(0,(p0-0.24)/0.12));
+        var aOut=1-Math.min(1,Math.max(0,(p0-0.58)/0.10));
+        if(cA){
+          var va=Math.min(aIn,aOut);
+          cA.style.opacity=va.toFixed(3);
+          cA.style.transform="translateY("+((1-Math.max(va,aIn))*20).toFixed(1)+"px)";
+        }
+        if(cB){
+          var vb=Math.min(1,Math.max(0,(p0-0.72)/0.12));
+          cB.style.opacity=vb.toFixed(3);
+          cB.style.transform="translateY("+((1-vb)*20).toFixed(1)+"px)";
+        }
+      }else if(kind==="wipe"){
+        var W=el.querySelector(".curtain-w");
+        if(W){
+          W.style.transform="translateX("+(e*100).toFixed(2)+"%)";
+          W.style.borderLeftColor="rgba(255,255,255,"+(0.18*(1-Math.pow(e,6))).toFixed(3)+")";
+        }
+        if(ph) ph.style.transform="translateX("+(-4.5+e*4.5).toFixed(2)+"%)";
+      }
+
+      if(cap && kind!=="twostage"){
+        var c=Math.min(1,Math.max(0,(p-0.52)/0.38));
+        cap.style.opacity=c.toFixed(3);
+        cap.style.transform="translateY("+((1-c)*20).toFixed(1)+"px)";
+      }
+    }
+  }
+
+  /* hero wordmark grows on scroll, anchored bottom-left */
+  var mark=document.getElementById("heromark");
+  var hero=document.getElementById("hero");
+  var queued=false;
+  function frame(){
+    queued=false;
+    if(reduce) return;
+    var vh=window.innerHeight||800;
+    bandFrame(vh);
+    if(!mark||!hero) return;
+    var h=hero.offsetHeight||1;
+    var y=window.pageYOffset||document.documentElement.scrollTop||0;
+    var p=Math.min(1,Math.max(0,y/h));
+    mark.style.transform="scale("+(1+p*0.85).toFixed(4)+")";
+  }
+  function onScroll(){ if(!queued){ queued=true; requestAnimationFrame(frame); } }
+  window.addEventListener("scroll",onScroll,{passive:true});
+  window.addEventListener("resize",onScroll,{passive:true});
+  frame();
+
+  /* hero image cycle */
+  if(!reduce){
+    var figs=[].slice.call(document.querySelectorAll(".herofig"));
+    var dots=[].slice.call(document.querySelectorAll(".hero-cycle i"));
+    if(figs.length>1){
+      var i=0;
+      setInterval(function(){
+        figs[i].classList.remove("on"); if(dots[i]) dots[i].classList.remove("on");
+        i=(i+1)%figs.length;
+        figs[i].classList.add("on"); if(dots[i]) dots[i].classList.add("on");
+      },5200);
+    }
+  }
+
+  /* copy buttons */
+  document.querySelectorAll(".copy").forEach(function(btn){
+    btn.addEventListener("click",function(){
+      var el=document.getElementById(btn.getAttribute("data-copy"));
+      if(!el)return;
+      var txt=el.textContent.trim();
+      function flash(w){ btn.textContent=w; setTimeout(function(){btn.textContent="Copy";},1600); }
+      function sel(n){ try{ var r=document.createRange(); r.selectNodeContents(n); var s=window.getSelection(); s.removeAllRanges(); s.addRange(r); flash("Selected"); }catch(e){} }
+      try{ navigator.clipboard.writeText(txt).then(function(){flash("Copied");},function(){sel(el);}); }catch(e){ sel(el); }
+    });
+  });
+
+  /* mandate form */
+  var form=document.getElementById("mandate-form");
+  if(form){
+    form.addEventListener("submit",function(e){
+      e.preventDefault();
+      var email=document.getElementById("f-email");
+      var old=form.querySelector(".form-ack"); if(old) old.remove();
+      var ack=document.createElement("div"); ack.className="form-ack";
+      var ok=email && email.value && email.value.indexOf("@")>0;
+      ack.textContent = ok
+        ? "Received. This demo form does not transmit — send the same note to deals@obsidianice.com and it will reach the deal desk."
+        : "Add an email address so we can respond, then send again.";
+      form.appendChild(ack);
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
